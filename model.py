@@ -99,9 +99,15 @@ class Model():
             batch_size = tf.shape(seq_length)[0]
 
         with tf.device(device):
-            cell_list = \
-                [new_cell(args, NUM_OUTPUTS, infer)] + \
-                [new_cell(args, rnn_size, infer)] * (num_layers-1)
+            # NOTE: pre- tf-1.1
+            #cell_list = \
+            #    [new_cell(args, NUM_OUTPUTS, infer)] + \
+            #    [new_cell(args, rnn_size, infer)] * (num_layers-1)
+                
+            # NOTE: post- tf-1.1
+            cell_list = [new_cell(args, NUM_OUTPUTS, infer)] + \
+                [new_cell(args, rnn_size, infer) for _ in range(num_layers-1)]
+                
             cell = tf.contrib.rnn.MultiRNNCell(cell_list)
 
             # initial_state = cell.zero_state(
